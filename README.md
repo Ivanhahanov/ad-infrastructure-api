@@ -11,7 +11,7 @@ coming soon...
 
 ### Golang
 
-Change config name `mv settings.yml.example settings.yml ` and edit it. 
+Change config name `mv config.yml.example config.yml ` and edit it. 
 
 Config parameters:
 * **param1** -

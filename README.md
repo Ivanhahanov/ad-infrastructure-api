@@ -11,11 +11,17 @@ coming soon...
 
 ### Golang
 
-Change config name `mv config.yml.example config.yml ` and edit it. 
+Change config name `mv config.yml.example config.yml ` and edit it.
 
 Config parameters:
-* **param1** -
-* **param2** -
+* **users**
+* **teams**
+
+You can use one of parameters for create only players or only teams. If users and teams specified it means that infrastructure has teams with users. 
+
+Resource parameters:
+* **memory** - count of memory (default: 2048)
+* **vcpu** - number of virtual cpu (default: 2)
 
 Run Api use golang
 

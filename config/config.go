@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 )
 
+var Conf *Config
+
 type Config struct {
 	Teams Teams `yaml:"teams"`
 	Users Users `yaml:"users"`
@@ -17,7 +19,7 @@ type Teams struct {
 }
 
 type Users struct {
-	Number int `yaml:"number"`
+	Number    int       `yaml:"number"`
 	Resources Resources `yaml:"resources"`
 }
 
@@ -26,17 +28,17 @@ type Resources struct {
 	VCPU   int `yaml:"vcpu"`
 }
 
-func ReadConf(filename string) (*Config, error) {
+func ReadConf(filename string) (error) {
 	buf, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	c := &Config{}
-	err = yaml.Unmarshal(buf, c)
+	Conf = &Config{}
+	err = yaml.Unmarshal(buf, Conf)
 	if err != nil {
-		return nil, fmt.Errorf("in file %q: %v", filename, err)
+		return fmt.Errorf("in file %q: %v", filename, err)
 	}
 
-	return c, nil
+	return nil
 }

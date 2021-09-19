@@ -31,10 +31,3 @@ func DeleteTeams(c *gin.Context) {
 		"message": fmt.Sprintf("team %s deleted", team),
 	})
 }
-
-func GenerateVariables(c *gin.Context) {
-	filename := "variables.tf"
-	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("file %s generated", filename),
-	})
-}

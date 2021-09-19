@@ -9,17 +9,17 @@ import (
 )
 
 func main() {
-	c, err := config.ReadConf("config.yml")
+	err := config.ReadConf("config.yml")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(c)
+	fmt.Println(config.Conf)
 	router := gin.Default()
 
 	// Simple group: v1
 	v1 := router.Group("/api/v1")
 	{
-		if c.Users != (config.Users{}) {
+		if config.Conf.Users != (config.Users{}) {
 			user := v1.Group("/user")
 			{
 				user.GET("/", routers.GetUserInfo)
@@ -28,7 +28,7 @@ func main() {
 				user.DELETE("/", routers.DeleteUser)
 			}
 		}
-		if c.Teams != (config.Teams{}) {
+		if config.Conf.Teams != (config.Teams{}) {
 			team := v1.Group("/team")
 			{
 				team.GET("/", routers.GetTeamInfo)
@@ -44,7 +44,7 @@ func main() {
 			admin.DELETE("/team/:name", routers.DeleteTeams)
 			admin.GET("/users", routers.UsersList)
 			admin.DELETE("/user/:name", routers.DeleteUsers)
-			admin.POST("/generate", routers.GenerateVariables)
+			admin.POST("/generate", routers.GenerateTerraformConfig)
 		}
 
 	}

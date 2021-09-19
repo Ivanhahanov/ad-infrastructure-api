@@ -1,3 +1,6 @@
+terraform_project_path: <path to ad-infratructure>
+ssh_keys: keys/
+admin_machine: True
 teams:
   number: 2
   resources:

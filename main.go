@@ -44,7 +44,9 @@ func main() {
 			admin.DELETE("/team/:name", routers.DeleteTeams)
 			admin.GET("/users", routers.UsersList)
 			admin.DELETE("/user/:name", routers.DeleteUsers)
-			admin.POST("/generate", routers.GenerateTerraformConfig)
+			admin.POST("/generate/terraform", routers.GenerateTerraformConfig)
+			admin.POST("/generate/variables", routers.GenerateVariables)
+
 		}
 
 	}

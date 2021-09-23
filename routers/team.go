@@ -3,13 +3,18 @@ package routers
 import (
 	"fmt"
 	"github.com/Ivanhahanov/ad-infrastructure-api/config"
-	"github.com/Ivanhahanov/ad-infrastructure-api/models"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
 	"path"
 )
+
+type Team struct {
+	Name      string `json:"name"`
+	Password  string `json:"password"`
+	SshPubKey string `json:"ssh_pub_key"`
+}
 
 func CreateSshKeyFile(name string, key string) error {
 	fileName := fmt.Sprintf("%s.pub", name)
@@ -28,18 +33,13 @@ func CreateSshKeyFile(name string, key string) error {
 }
 
 func GetTeamInfo(c *gin.Context) {
-	team := models.Team{
+	team := Team{
 		Name: "Test",
-		Players: []string{
-			"test1",
-			"test2",
-			"test3",
-		},
 	}
 	c.JSON(http.StatusOK, team)
 }
 func CreateTeam(c *gin.Context) {
-	var team models.Team
+	var team Team
 	jsonErr := c.BindJSON(&team)
 	if jsonErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": jsonErr.Error()})

@@ -1,0 +1,31 @@
+teams:
+  - name: naliway
+    address: localhost:8081
+  - name: nakateam
+    address: localhost:8082
+
+http:
+  - route: /json
+    schema: http
+    method: post
+    header:
+      Content-Type: application/json
+      Flag: $flag
+    json_body:
+      name: test
+      password: $flag
+      flags:
+        - a
+        - b
+
+  - route: /header
+    schema: http
+    method: post
+    header:
+      Flag: $flag
+
+  - route: /get
+    schema: http
+    method: get
+    params:
+      test: $flag

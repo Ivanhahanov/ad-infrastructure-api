@@ -1,0 +1,7 @@
+services:
+  - name: ExampleTask
+    http:
+      - route: /check/user
+        schema: http
+        method: get
+        port: 3000

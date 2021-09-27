@@ -1,0 +1,12 @@
+services:
+  - name: ExampleTask
+    http:
+      - route: /user
+        schema: http
+        method: put
+        port: 3000
+        header:
+          Content-Type: application/json
+        json_body:
+          name: test
+          password: $flag

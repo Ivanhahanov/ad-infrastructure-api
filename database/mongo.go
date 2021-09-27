@@ -15,7 +15,11 @@ var collection *mongo.Collection
 var ctx = context.TODO()
 
 func InitMongo() {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017/")
+	credential := options.Credential{
+		Username: "admin",
+		Password: "admin",
+	}
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017/").SetAuth(credential)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)
@@ -72,7 +76,7 @@ func FilterTeams(filter interface{}) ([]*models.Team, error) {
 	return teams, nil
 }
 
-func deleteTeam(name string) error {
+func DeleteTeam(name string) error {
 	filter := bson.D{primitive.E{Key: "name", Value: name}}
 
 	res, err := collection.DeleteOne(ctx, filter)

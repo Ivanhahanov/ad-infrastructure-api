@@ -12,6 +12,7 @@ type Config struct {
 	TerraformProjectPath string `yaml:"terraform_project_path"`
 	SshKeys              string `yaml:"ssh_keys"`
 	AdminMachine         bool   `yaml:"admin_machine"`
+	Network              string `yaml:"network"`
 	Teams                Teams  `yaml:"teams"`
 	Users                Users  `yaml:"users"`
 }

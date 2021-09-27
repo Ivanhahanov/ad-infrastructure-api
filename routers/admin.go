@@ -2,6 +2,7 @@ package routers
 
 import (
 	"fmt"
+	"github.com/Ivanhahanov/ad-infrastructure-api/database"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -13,8 +14,13 @@ func UsersList(c *gin.Context) {
 }
 
 func TeamsList(c *gin.Context) {
+	teams, dbErr := database.GetTeams()
+	if dbErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": dbErr.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"teams": []string{"Test"},
+		"teams": teams,
 	})
 }
 

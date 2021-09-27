@@ -11,6 +11,8 @@ type Team struct {
 	UpdatedAt time.Time          `bson:"updated_at"`
 	Name      string             `bson:"name"`
 	Hash      string             `bson:"hash"`
+	Address   string             `bson:"address"`
+	SshPubKey string             `bson:"shh_pub_key"`
 }
 
 type ScoreBoard struct {

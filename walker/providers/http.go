@@ -4,15 +4,17 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"strings"
 )
 
-func (h *HTTP) Run(address string) (status int, err error) {
+func (h *HTTP) Run(address string, flag string) (status *http.Response, body []byte, err error) {
 	var data []byte
 	if h.JsonBody != nil {
 		data, _ = json.Marshal(&h.JsonBody)
-		data = []byte(strings.Replace(string(data), "$flag", GenerateFlag(16), 1))
+		data = []byte(strings.Replace(string(data), "$flag", flag, 1))
 	}
 	url := fmt.Sprintf("%s://%s:%d%s", h.Schema, address,h.Port, h.Route)
 	req, err := http.NewRequest(
@@ -21,12 +23,12 @@ func (h *HTTP) Run(address string) (status int, err error) {
 		bytes.NewBuffer(data),
 	)
 	if err != nil {
-		return 0, err
+		return nil, nil, err
 	}
 	if h.Params != nil {
 		q := req.URL.Query()
 		for key, value := range h.Params {
-			value = strings.Replace(value, "$flag", GenerateFlag(16), 1)
+			value = strings.Replace(value, "$flag", flag, 1)
 			q.Add(key, value)
 		}
 		req.URL.RawQuery = q.Encode()
@@ -34,18 +36,22 @@ func (h *HTTP) Run(address string) (status int, err error) {
 	}
 	if h.Header != nil {
 		for key, value := range h.Header {
-			value = strings.Replace(value, "$flag", GenerateFlag(16), 1)
+			value = strings.Replace(value, "$flag", flag, 1)
 			req.Header.Set(key, value)
 		}
 	}
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return 0, err
+		return nil, nil, err
+	}
+	body, bodyErr := io.ReadAll(resp.Body)
+	if bodyErr != nil {
+		log.Println(body)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == 200 {
-		return 1, nil
+		return resp, body,  nil
 	}
-	return 0, fmt.Errorf("%s returned status %d", address, resp.StatusCode)
+	return nil, body, fmt.Errorf("%s returned status %d", address, resp.StatusCode)
 }

@@ -1,15 +1,16 @@
 package routers
 
 import (
-	"fmt"
+"fmt"
+	"github.com/Ivanhahanov/ad-infrastructure-api/database"
 	"github.com/Ivanhahanov/ad-infrastructure-api/walker"
-	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
+"github.com/gin-gonic/gin"
+"log"
+"net/http"
 )
 
-func RunWalkerHandler(c *gin.Context) {
-	result, err := walker.PutFlags()
+func CheckerHandler(c *gin.Context) {
+	result, err := walker.CheckFlags()
 	if err != nil{
 		log.Println(err)
 		c.Data(http.StatusOK, "text/plain", []byte(""))
@@ -18,5 +19,6 @@ func RunWalkerHandler(c *gin.Context) {
 	for k, v := range result {
 		data += fmt.Sprintf("%s %d\n", k, v)
 	}
+	database.RemoveAllFlags()
 	c.Data(http.StatusOK, "text/plain", []byte(data))
 }

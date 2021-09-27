@@ -7,8 +7,13 @@ import (
 )
 
 type ConfigProviders struct {
-	Teams []Team `yaml:"teams"`
-	HTTP  []HTTP `yaml:"http"`
+	Teams   []Team    `yaml:"teams"`
+	Service []Service `yaml:"services"`
+}
+
+type Service struct {
+	Name string `yaml:"name"`
+	HTTP []HTTP `yaml:"http"`
 }
 
 type Team struct {
@@ -36,22 +41,23 @@ func (p *ConfigProviders) Parse(filename string) error {
 	if err != nil {
 		return fmt.Errorf("in file %q: %v", filename, err)
 	}
-	for i, http := range p.HTTP {
+	for i, team := range p.Service {
+		for j, http := range team.HTTP {
 
-		if http.Route == "" {
-			p.HTTP[i].Route = "/"
-		}
-		if http.Port == 0 {
-			p.HTTP[i].Port = 80
-		}
+			if http.Route == "" {
+				p.Service[i].HTTP[j].Route = "/"
+			}
+			if http.Port == 0 {
+				p.Service[i].HTTP[j].Port = 80
+			}
 
-		if http.Schema == "" {
-			p.HTTP[i].Schema = "http"
-		}
-		if http.Method == "" {
-			p.HTTP[i].Method = "get"
+			if http.Schema == "" {
+				p.Service[i].HTTP[j].Schema = "http"
+			}
+			if http.Method == "" {
+				p.Service[i].HTTP[j].Method = "get"
+			}
 		}
 	}
-
 	return nil
 }

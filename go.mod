@@ -3,6 +3,7 @@ module github.com/Ivanhahanov/ad-infrastructure-api
 go 1.16
 
 require (
+	github.com/appleboy/gin-jwt/v2 v2.6.4
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/hashicorp/hcl/v2 v2.10.1

@@ -21,3 +21,7 @@ type ScoreBoard struct {
 	Attack int                `bson:"attack"`
 	SLA    int                `bson:"sla"`
 }
+
+type JWTTeam struct {
+	TeamName string
+}

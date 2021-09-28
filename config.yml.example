@@ -1,0 +1,9 @@
+terraform_project_path: .
+ssh_keys: keys/
+network: 192.168.122.0/24
+checker_password: test
+teams:
+  number: 2
+  resources:
+    memory: 2048
+    vcpu: 2

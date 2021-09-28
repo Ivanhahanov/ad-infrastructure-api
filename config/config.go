@@ -13,6 +13,7 @@ type Config struct {
 	SshKeys              string `yaml:"ssh_keys"`
 	AdminMachine         bool   `yaml:"admin_machine"`
 	Network              string `yaml:"network"`
+	CheckerPassword      string `yaml:"checker_password"`
 	Teams                Teams  `yaml:"teams"`
 	Users                Users  `yaml:"users"`
 }

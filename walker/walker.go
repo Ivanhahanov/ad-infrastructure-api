@@ -9,6 +9,13 @@ import (
 	"strings"
 )
 
+func formatLabels(labels map[string]string) string {
+	var d []string
+	for key,value := range labels{
+		d = append(d, fmt.Sprintf("%s=\"%s\"", key, value))
+	}
+	return strings.Join(d, ",")
+}
 func PutFlags() (map[string]int, error) {
 	var c providers.ConfigProviders
 	err := c.Parse("walker.yml")
@@ -24,13 +31,19 @@ func PutFlags() (map[string]int, error) {
 		for _, service := range c.Service {
 			if !reflect.ValueOf(service.HTTP).IsZero() {
 				for _, http := range service.HTTP {
-					metricName := fmt.Sprintf("http_%s_%s%s", team.Name, service.Name, strings.Replace(http.Route, "/", "_", -1))
+					metricLabels := map[string]string{
+						"proto": "http",
+						"team": team.Name,
+						"service": service.Name,
+						"route": http.Route,
+					}
+					metricNameStr := fmt.Sprintf("walker{%s}", formatLabels(metricLabels))
 					flag := providers.GenerateFlag(20)
 					//response, httpErr := http.Run(team.Address, flag)
 					response, _, httpErr := http.Run("localhost", flag)
 					if httpErr != nil {
 						log.Println(team.Address, team.Name, service.Name, httpErr)
-						promResult[metricName] = 0
+						promResult[metricNameStr] = 0
 						break
 					}
 					if response.StatusCode == 200 {
@@ -39,12 +52,13 @@ func PutFlags() (map[string]int, error) {
 							Service: service.Name,
 							Team:    team.Name,
 						})
-						promResult[metricName] = 1
+						promResult[metricNameStr] = 1
 					}
 				}
 			}
 		}
 	}
+	database.WriteTime()
 	return promResult, nil
 }
 
@@ -63,12 +77,18 @@ func CheckFlags() (map[string]int, error) {
 		for _, service := range c.Service {
 			if !reflect.ValueOf(service.HTTP).IsZero() {
 				for _, http := range service.HTTP {
-					metricName := fmt.Sprintf("http_%s_%s%s", team.Name, service.Name, strings.Replace(http.Route, "/", "_", -1))
+					metricLabels := map[string]string{
+						"proto": "http",
+						"team": team.Name,
+						"service": service.Name,
+						"route": http.Route,
+					}
+					metricNameStr := fmt.Sprintf("checker{%s}", formatLabels(metricLabels))
 					//response, httpErr := http.Run(team.Address, "")
 					_, body, httpErr := http.Run("localhost", "")
 					if httpErr != nil {
 						log.Println(team.Address, team.Name, service.Name, httpErr)
-						promResult[metricName] = 0
+						promResult[metricNameStr] = 0
 						break
 					}
 					log.Println(string(body))
@@ -78,7 +98,7 @@ func CheckFlags() (map[string]int, error) {
 					}
 					log.Println(flag)
 					if flag[0] == team.Name && flag[1] == service.Name {
-						promResult[metricName] = 1
+						promResult[metricNameStr] = 1
 					}
 				}
 			}

@@ -145,7 +145,7 @@ func main() {
 	{
 		v1.POST("/login", authMiddleware.LoginHandler)
 		v1.POST("/submit", authMiddleware.MiddlewareFunc(), routers.SubmitFlagHandler)
-
+		v1.GET("/scoreboard", authMiddleware.MiddlewareFunc(), routers.ShowScoreboard)
 		auth := router.Group("/auth")
 		// Refresh time can be longer than token timeout
 		auth.GET("/refresh_token", authMiddleware.RefreshHandler)
@@ -168,13 +168,9 @@ func main() {
 			// admin.POST("/generate/terraform", routers.GenerateTerraformConfig)
 			admin.POST("/generate/variables", routers.GenerateVariables)
 			admin.POST("/generate/sshkeys", routers.GenerateSshKeysDir)
+			admin.POST("/generate/prometheus", routers.GeneratePrometheus)
 
 		}
-		v1.GET("/walker",
-			gin.BasicAuth(gin.Accounts{
-				"checker": config.Conf.CheckerPassword,
-			}),
-			routers.RunWalkerHandler)
 		v1.GET("/checker",
 			gin.BasicAuth(gin.Accounts{
 				"checker": config.Conf.CheckerPassword,

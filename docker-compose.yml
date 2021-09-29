@@ -5,7 +5,7 @@ services:
 
   mongo:
     image: mongo:5.0
-    container_name: mongodocke
+    container_name: up
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin

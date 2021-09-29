@@ -3,15 +3,22 @@ package database
 import (
 	"github.com/go-redis/redis"
 	"log"
+	"time"
 )
 
 var client *redis.Client
+var timeClient *redis.Client
 
 func InitRedis() {
 	client = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "admin",
 		DB:       0,
+	})
+	timeClient = redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "admin",
+		DB:       1,
 	})
 }
 
@@ -37,6 +44,17 @@ func GetInfo(flag string) ([]interface{}, error) {
 	}
 	return result, nil
 }
-func RemoveAllFlags()  {
-	client.FlushAll()
+func RemoveAllFlags() {
+	client.FlushDB()
+}
+
+func WriteTime() {
+	timeClient.RPush("time", time.Now().Format(time.RFC3339))
+}
+func GetStartTime() (string, error) {
+	result, err := timeClient.LIndex("time", 0).Result()
+	if err != nil {
+		return "", err
+	}
+	return result, nil
 }

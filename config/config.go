@@ -14,6 +14,7 @@ type Config struct {
 	AdminMachine         bool   `yaml:"admin_machine"`
 	Network              string `yaml:"network"`
 	CheckerPassword      string `yaml:"checker_password"`
+	RoundInterval        string `yaml:"round_interval"`
 	Teams                Teams  `yaml:"teams"`
 	Users                Users  `yaml:"users"`
 }

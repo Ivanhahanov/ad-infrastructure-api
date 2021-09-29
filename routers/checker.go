@@ -10,15 +10,24 @@ import (
 )
 
 func CheckerHandler(c *gin.Context) {
-	result, err := walker.CheckFlags()
+	checkResult, err := walker.CheckFlags()
 	if err != nil{
 		log.Println(err)
 		c.Data(http.StatusOK, "text/plain", []byte(""))
 	}
 	var data string
-	for k, v := range result {
+	for k, v := range checkResult {
 		data += fmt.Sprintf("%s %d\n", k, v)
 	}
 	database.RemoveAllFlags()
+
+	putResult, err := walker.PutFlags()
+	if err != nil{
+		log.Println(err)
+		c.Data(http.StatusOK, "text/plain", []byte(""))
+	}
+	for k, v := range putResult {
+		data += fmt.Sprintf("%s %d\n", k, v)
+	}
 	c.Data(http.StatusOK, "text/plain", []byte(data))
 }

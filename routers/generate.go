@@ -169,3 +169,7 @@ func GenerateVariables(c *gin.Context) {
 		"message": fmt.Sprintf("file %s generated", fileName),
 	})
 }
+
+func GeneratePrometheus(c *gin.Context) {
+
+}

@@ -28,7 +28,7 @@ type FlagStruct struct {
 	Service string
 }
 
-func PutFlag(flagStruct FlagStruct) error {
+func PutFlag(flagStruct *FlagStruct) error {
 	status := client.HMSet(flagStruct.Flag, map[string]interface{}{
 		"team":    flagStruct.Team,
 		"service": flagStruct.Service,
@@ -51,8 +51,8 @@ func RemoveAllFlags() {
 func WriteTime() {
 	timeClient.RPush("time", time.Now().Format(time.RFC3339))
 }
-func GetTime(index int) (string, error) {
-	result, err := timeClient.LIndex("time", 0).Result()
+func GetTime(index int64) (string, error) {
+	result, err := timeClient.LIndex("time", index).Result()
 	if err != nil {
 		return "", err
 	}
@@ -64,4 +64,12 @@ func GetStartTimeStamp() (string, error) {
 
 func GetLastTimeStamp() (string, error) {
 	return GetTime(-1)
+}
+
+func WriteFlagSubmit(flagStruct *FlagStruct){
+	status := client.HMSet(flagStruct.Flag, map[string]interface{}{
+		"team":    flagStruct.Team,
+		"service": flagStruct.Service,
+	})
+	log.Println(status)
 }

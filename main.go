@@ -8,9 +8,11 @@ import (
 	"github.com/Ivanhahanov/ad-infrastructure-api/routers"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -21,15 +23,36 @@ type login struct {
 
 var identityKey = "id"
 
-func isAdmin() gin.HandlerFunc{
+func isAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user, _ := c.Get("id")
-		if user.(*models.JWTTeam).TeamName == "admin"{
+		if user.(*models.JWTTeam).TeamName == "admin" {
 			c.Next()
 			return
 		}
 		c.AbortWithStatus(http.StatusForbidden)
 	}
+}
+
+func AddAdmin() {
+	teams, _ :=database.GetTeams()
+	for _, team:= range teams{
+		if team.Name == "admin"{
+			return
+		}
+	}
+	password := os.Getenv("ADMIN_PASS")
+	if password == "" {
+		password = "admin"
+	}
+	hash, _ := routers.HashPassword(password)
+	database.CreateTeam(&models.Team{
+		ID:   primitive.NewObjectID(),
+		Name: "admin",
+		Hash: hash,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
 }
 
 func main() {
@@ -41,6 +64,9 @@ func main() {
 	fmt.Println(config.Conf)
 	database.InitMongo()
 	database.InitRedis()
+
+	AddAdmin()
+
 	router := gin.Default()
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
@@ -164,6 +190,7 @@ func main() {
 		admin.Use(isAdmin())
 		{
 			admin.GET("/teams", routers.TeamsList)
+			admin.POST("/vpn", routers.CreateVpnTeams)
 			admin.DELETE("/team/:name", routers.DeleteTeams)
 			// admin.POST("/generate/terraform", routers.GenerateTerraformConfig)
 			admin.POST("/generate/variables", routers.GenerateVariables)

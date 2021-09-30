@@ -11,7 +11,12 @@ import (
 )
 
 func GetMetricsNames() {
-	req, err := http.NewRequest("GET", "http://localhost:9090/api/v1/query_range", nil)
+	vpnAddr := os.Getenv("PROMETHEUS")
+	if vpnAddr == ""{
+		vpnAddr = "http://localhost:9090"
+	}
+	urlAddr := vpnAddr + "/api/v1/query_range"
+	req, err := http.NewRequest("GET", urlAddr, nil)
 	if err != nil {
 		log.Print(err)
 		os.Exit(1)

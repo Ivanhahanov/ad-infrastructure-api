@@ -17,7 +17,7 @@ func GetMetricsNames() {
 		os.Exit(1)
 	}
 
-	startTime, _ := GetStartTime()
+	startTime, _ := GetStartTimeStamp()
 
 	q := req.URL.Query()
 	q.Add("query", "checker")

@@ -51,10 +51,17 @@ func RemoveAllFlags() {
 func WriteTime() {
 	timeClient.RPush("time", time.Now().Format(time.RFC3339))
 }
-func GetStartTime() (string, error) {
+func GetTime(index int) (string, error) {
 	result, err := timeClient.LIndex("time", 0).Result()
 	if err != nil {
 		return "", err
 	}
 	return result, nil
+}
+func GetStartTimeStamp() (string, error) {
+	return GetTime(0)
+}
+
+func GetLastTimeStamp() (string, error) {
+	return GetTime(-1)
 }

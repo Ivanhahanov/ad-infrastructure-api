@@ -4,7 +4,7 @@ services:
       - route: /user
         schema: http
         method: put
-        port: 3000
+        port: 3333
         header:
           Content-Type: application/json
         json_body:

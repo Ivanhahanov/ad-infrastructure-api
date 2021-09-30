@@ -3,22 +3,33 @@ package database
 import (
 	"github.com/go-redis/redis"
 	"log"
+	"os"
 	"time"
 )
 
 var client *redis.Client
 var timeClient *redis.Client
+var submitClient *redis.Client
 
 func InitRedis() {
+	redisAddr := os.Getenv("REDIS")
+	if redisAddr == "" {
+		redisAddr = "localhost:6379"
+	}
 	client = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     redisAddr,
 		Password: "admin",
 		DB:       0,
 	})
-	timeClient = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+	submitClient = redis.NewClient(&redis.Options{
+		Addr:     redisAddr,
 		Password: "admin",
 		DB:       1,
+	})
+	timeClient = redis.NewClient(&redis.Options{
+		Addr:     redisAddr,
+		Password: "admin",
+		DB:       2,
 	})
 }
 
@@ -66,10 +77,18 @@ func GetLastTimeStamp() (string, error) {
 	return GetTime(-1)
 }
 
-func WriteFlagSubmit(flagStruct *FlagStruct){
-	status := client.HMSet(flagStruct.Flag, map[string]interface{}{
+func AddSubmitFlag(flagStruct *FlagStruct) {
+	status := submitClient.HMSet(flagStruct.Flag, map[string]interface{}{
 		"team":    flagStruct.Team,
 		"service": flagStruct.Service,
 	})
 	log.Println(status)
+}
+
+func GetSubmitFlags(flag string) ([]interface{}, error) {
+	result, err := submitClient.HMGet(flag, "team", "service").Result()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }

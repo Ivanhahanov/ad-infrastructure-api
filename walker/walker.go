@@ -47,7 +47,7 @@ func PutFlags() (map[string]int, error) {
 						break
 					}
 					if response.StatusCode == 200 {
-						database.PutFlag(database.FlagStruct{
+						database.PutFlag(&database.FlagStruct{
 							Flag:    flag,
 							Service: service.Name,
 							Team:    team.Name,

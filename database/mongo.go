@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"os"
 )
 
 var collection *mongo.Collection
@@ -19,7 +20,13 @@ func InitMongo() {
 		Username: "admin",
 		Password: "admin",
 	}
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017/").SetAuth(credential)
+
+	mongoAddr := os.Getenv("MONGODB")
+	if mongoAddr == ""{
+		mongoAddr = "mongodb://localhost:27017"
+	}
+
+	clientOptions := options.Client().ApplyURI(mongoAddr).SetAuth(credential)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)

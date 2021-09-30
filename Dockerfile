@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.11
+ARG GO_VERSION=1.16
 
 FROM golang:${GO_VERSION}-alpine AS builder
 
@@ -11,7 +11,7 @@ COPY go.sum .
 RUN go mod download
 
 COPY . .
-RUN go build -o ./app ./src/main.go
+RUN go build -o ./app /main.go
 
 FROM alpine:latest
 

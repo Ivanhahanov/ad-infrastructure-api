@@ -15,13 +15,26 @@ type Team struct {
 	SshPubKey string             `bson:"shh_pub_key"`
 }
 
-type ScoreBoard struct {
-	ID     primitive.ObjectID `bson:"_id"`
-	Name   string             `bson:"name"`
-	Attack int                `bson:"attack"`
-	SLA    int                `bson:"sla"`
-}
+//type ScoreBoard struct {
+//	ID     primitive.ObjectID `bson:"_id"`
+//	Name   string             `bson:"name"`
+//	Attack int                `bson:"attack"`
+//	SLA    int                `bson:"sla"`
+//}
 
 type JWTTeam struct {
 	TeamName string
+}
+type Scoreboard struct {
+	Teams []ScoreboardTeam
+}
+
+type ScoreboardTeam struct {
+	TeamName string
+	Services []ScoreboardService
+}
+
+type ScoreboardService struct {
+	ServiceName string
+	Routes      map[string]float64
 }

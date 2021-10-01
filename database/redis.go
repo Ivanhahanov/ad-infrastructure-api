@@ -16,19 +16,23 @@ func InitRedis() {
 	if redisAddr == "" {
 		redisAddr = "localhost:6379"
 	}
+	adminPass := os.Getenv("ADMIN_PASS")
+	if adminPass == ""{
+		adminPass = "admin"
+	}
 	client = redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
-		Password: "admin",
+		Password: adminPass,
 		DB:       0,
 	})
 	submitClient = redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
-		Password: "admin",
+		Password: adminPass,
 		DB:       1,
 	})
 	timeClient = redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
-		Password: "admin",
+		Password: adminPass,
 		DB:       2,
 	})
 }

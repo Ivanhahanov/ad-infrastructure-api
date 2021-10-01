@@ -16,9 +16,13 @@ var collection *mongo.Collection
 var ctx = context.TODO()
 
 func InitMongo() {
+	adminPass := os.Getenv("ADMIN_PASS")
+	if adminPass == ""{
+		adminPass = "admin"
+	}
 	credential := options.Credential{
 		Username: "admin",
-		Password: "admin",
+		Password: adminPass,
 	}
 
 	mongoAddr := os.Getenv("MONGODB")

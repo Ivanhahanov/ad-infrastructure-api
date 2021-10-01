@@ -8,6 +8,6 @@ import (
 
 func ShowScoreboard(c *gin.Context) {
 	sla := 1
-	database.GetMetricsNames()
+	database.GetMetricsNames("naliway", "ExampleTask")
 	c.JSON(http.StatusOK, sla)
 }

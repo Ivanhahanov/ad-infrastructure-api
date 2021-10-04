@@ -58,7 +58,6 @@ func PutFlags() (map[string]int, error) {
 			}
 		}
 	}
-	database.WriteTime()
 	return promResult, nil
 }
 
@@ -97,6 +96,7 @@ func CheckFlags() (map[string]int, error) {
 						log.Println(team.Address, team.Name, service.Name, redisErr)
 					}
 					log.Println(flag)
+					promResult[metricNameStr] = 0
 					if flag[0] == team.Name && flag[1] == service.Name {
 						promResult[metricNameStr] = 1
 					}

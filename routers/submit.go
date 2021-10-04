@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"github.com/Ivanhahanov/ad-infrastructure-api/database"
 	"github.com/Ivanhahanov/ad-infrastructure-api/models"
 	"github.com/gin-gonic/gin"
@@ -35,32 +34,35 @@ func SubmitFlagHandler(c *gin.Context) {
 				log.Println(redisErr)
 			}
 			if submittedFlags[0] == nil && submittedFlags[1] == nil {
+				serviceName := answer[1].(string)
 				database.AddSubmitFlag(&database.FlagStruct{
 					Flag:    flag.Flag,
 					Team:    teamName,
-					Service: fmt.Sprintf("%v", answer[1]),
+					Service: serviceName,
 				})
+				database.AddAttackFlag(teamName, serviceName)
+				database.AddDefenceFlag(answer[0].(string), serviceName)
 				c.JSON(http.StatusOK, gin.H{
-					"result": true,
+					"result":  true,
 					"message": "Flag is submit successfully",
 				})
 				return
 			}
 			c.JSON(http.StatusOK, gin.H{
-				"result": false,
+				"result":  false,
 				"message": "you have already submit this flag",
 			})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
-			"result": false,
+			"result":  false,
 			"message": "you can't submit your flags",
 		})
 		return
 	}
 	// TODO add count to scoreboard
 	c.JSON(http.StatusOK, gin.H{
-		"result": false,
+		"result":  false,
 		"message": "invalid flag",
 	})
 }

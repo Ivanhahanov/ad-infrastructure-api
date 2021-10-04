@@ -15,6 +15,14 @@ type Team struct {
 	SshPubKey string             `bson:"shh_pub_key"`
 }
 
+type Flags struct {
+	ID          primitive.ObjectID `bson:"_id"`
+	Team        string             `bson:"team"`
+	Service     string             `bson:"service"`
+	AttackFlag  int                `bson:"attack_flag"`
+	DefenceFlag int                `bson:"defence_flag"`
+}
+
 //type ScoreBoard struct {
 //	ID     primitive.ObjectID `bson:"_id"`
 //	Name   string             `bson:"name"`

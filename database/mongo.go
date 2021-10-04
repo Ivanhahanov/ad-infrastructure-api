@@ -13,11 +13,12 @@ import (
 )
 
 var collection *mongo.Collection
+var flags *mongo.Collection
 var ctx = context.TODO()
 
 func InitMongo() {
 	adminPass := os.Getenv("ADMIN_PASS")
-	if adminPass == ""{
+	if adminPass == "" {
 		adminPass = "admin"
 	}
 	credential := options.Credential{
@@ -26,7 +27,7 @@ func InitMongo() {
 	}
 
 	mongoAddr := os.Getenv("MONGODB")
-	if mongoAddr == ""{
+	if mongoAddr == "" {
 		mongoAddr = "mongodb://localhost:27017"
 	}
 
@@ -42,6 +43,7 @@ func InitMongo() {
 	}
 
 	collection = client.Database("ad").Collection("teams")
+	flags = client.Database("ad").Collection("flags")
 }
 
 func CreateTeam(team *models.Team) error {
@@ -49,6 +51,11 @@ func CreateTeam(team *models.Team) error {
 	return err
 }
 func GetTeams() ([]*models.Team, error) {
+	// passing bson.D{{}} matches all documents in the collection
+	filter := bson.M{"name": bson.M{"$ne": "admin"}}
+	return FilterTeams(filter)
+}
+func GetUsers() ([]*models.Team, error) {
 	// passing bson.D{{}} matches all documents in the collection
 	filter := bson.D{{}}
 	return FilterTeams(filter)
@@ -99,5 +106,26 @@ func DeleteTeam(name string) error {
 		return errors.New("No teams were deleted")
 	}
 
+	return nil
+}
+
+func AddAttackFlag(team string, service string) error {
+	return AddFlag(team, service, "attack_flag")
+}
+
+func AddDefenceFlag(team string, service string) error {
+	return AddFlag(team, service, "defence_flag")
+}
+func AddFlag(team string, service string, field string) error {
+	_, err := flags.UpdateOne(ctx, bson.M{
+		"team":    team,
+		"service": service,
+	}, bson.D{
+		{"$inc", bson.D{{field, 1}}},
+	}, options.Update().SetUpsert(true))
+	if err != nil {
+		log.Println(err)
+		return err
+	}
 	return nil
 }

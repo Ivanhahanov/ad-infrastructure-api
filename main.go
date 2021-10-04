@@ -35,7 +35,7 @@ func isAdmin() gin.HandlerFunc {
 }
 
 func AddAdmin() {
-	teams, _ :=database.GetTeams()
+	teams, _ :=database.GetUsers()
 	for _, team:= range teams{
 		if team.Name == "admin"{
 			return
@@ -172,6 +172,7 @@ func main() {
 		v1.POST("/login", authMiddleware.LoginHandler)
 		v1.POST("/submit", authMiddleware.MiddlewareFunc(), routers.SubmitFlagHandler)
 		v1.GET("/scoreboard", authMiddleware.MiddlewareFunc(), routers.ShowScoreboard)
+		v1.GET("/scoreboard/:name", authMiddleware.MiddlewareFunc(), routers.ShowTeamStatus)
 		auth := router.Group("/auth")
 		// Refresh time can be longer than token timeout
 		auth.GET("/refresh_token", authMiddleware.RefreshHandler)

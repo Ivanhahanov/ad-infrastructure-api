@@ -178,7 +178,7 @@ func main() {
 		auth.GET("/refresh_token", authMiddleware.RefreshHandler)
 		auth.Use(authMiddleware.MiddlewareFunc())
 		team := v1.Group("/team")
-		team.PUT("/", routers.CreateTeam)
+		team.POST("/", routers.CreateTeam)
 		team.Use(authMiddleware.MiddlewareFunc())
 		{
 			team.GET("/", routers.GetTeamInfo)

@@ -37,3 +37,8 @@ func DeleteTeams(c *gin.Context) {
 		"message": fmt.Sprintf("team %s deleted", team),
 	})
 }
+
+func CountTeamsHandler(c *gin.Context) {
+	teamsCount := database.CountTeams()
+	c.JSON(http.StatusOK, gin.H{"count": teamsCount})
+}

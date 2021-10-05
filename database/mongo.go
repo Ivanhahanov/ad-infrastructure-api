@@ -129,3 +129,7 @@ func AddFlag(team string, service string, field string) error {
 	}
 	return nil
 }
+func CountTeams() int64 {
+	itemCount, _ := collection.CountDocuments(ctx, bson.M{"name": bson.M{"$ne": "admin"}})
+	return itemCount
+}

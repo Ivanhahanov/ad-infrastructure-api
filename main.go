@@ -199,6 +199,10 @@ func main() {
 			admin.POST("/generate/prometheus", routers.GeneratePrometheus)
 
 		}
+		services := v1.Group("/services")
+		{
+			services.GET("/teams/count", routers.CountTeamsHandler)
+		}
 		v1.GET("/checker",
 			gin.BasicAuth(gin.Accounts{
 				"checker": config.Conf.CheckerPassword,

@@ -1,0 +1,333 @@
+{
+	"info": {
+		"_postman_id": "f3a6ad77-0b27-4625-8b4e-7468102dea1d",
+		"name": "AD infrastructure",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Admin Show teams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/admin/teams",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Variables",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "Generate SSH",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "VPN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/api/v1/admin/vpn",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"vpn"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const tokenUrl = 'http://' + pm.variables.get(\"api\") + '/api/v1/login';",
+							"",
+							"",
+							"const username = 'admin';",
+							"const password = 'admin';",
+							"",
+							"",
+							"const getTokenRequest = {",
+							"",
+							"  method: 'POST',",
+							"",
+							"  url: tokenUrl,",
+							"",
+							"  body: {",
+							"      mode: 'formdata',",
+							"      formdata: [",
+							"          { key: 'username', value: username },",
+							"          { key: 'password', value: password }",
+							"      ]",
+							"  }",
+							"};",
+							"",
+							"",
+							"pm.sendRequest(getTokenRequest, (err, response) => {",
+							"  const jsonResponse = response.json();",
+							"  const newAccessToken = jsonResponse.token;",
+							"  pm.variables.set('access_token', newAccessToken);",
+							"",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Flags",
+			"item": [
+				{
+					"name": "Check Flag",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "Submit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"flag\": \"flag\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/submit",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"submit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Example Task",
+			"item": [
+				{
+					"name": "Put User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "Check User Flag",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/check/user",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"check",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Scoreboard",
+			"item": [
+				{
+					"name": "Board",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/scoreboard",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"scoreboard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Team",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Teams",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"test\",\n    \"password\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const tokenUrl = 'http://' + pm.variables.get(\"api\") + '/api/v1/login';",
+					"",
+					"",
+					"const username = 'naliway';",
+					"const password = 'explabs';",
+					"",
+					"",
+					"const getTokenRequest = {",
+					"",
+					"  method: 'POST',",
+					"",
+					"  url: tokenUrl,",
+					"",
+					"  body: {",
+					"      mode: 'formdata',",
+					"      formdata: [",
+					"          { key: 'username', value: username },",
+					"          { key: 'password', value: password }",
+					"      ]",
+					"  }",
+					"};",
+					"",
+					"",
+					"pm.sendRequest(getTokenRequest, (err, response) => {",
+					"  const jsonResponse = response.json();",
+					"  const newAccessToken = jsonResponse.token;",
+					"  pm.variables.set('access_token', newAccessToken);",
+					"",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api",
+			"value": "localhost"
+		}
+	]
+}

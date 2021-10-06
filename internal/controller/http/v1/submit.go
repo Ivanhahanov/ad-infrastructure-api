@@ -21,7 +21,7 @@ type flagRoutes struct {
 func NewFlagRoutes(handler *gin.RouterGroup, l logger.Interface, manager *_manager.CtfManager, jwtMiddleware *jwt.GinJWTMiddleware) {
 	r := &flagRoutes{l, manager}
 
-	handler.POST("flag/submit", jwtMiddleware.MiddlewareFunc(), r.SubmitFlagHandler)
+	handler.POST("/flag/submit", jwtMiddleware.MiddlewareFunc(), r.SubmitFlagHandler)
 }
 
 func (r *flagRoutes) SubmitFlagHandler(c *gin.Context) {

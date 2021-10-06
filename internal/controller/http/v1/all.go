@@ -92,13 +92,6 @@ func NewRouter(handler *gin.Engine, l logger.Interface, manager *_manager.CtfMan
 	errInit := jwtMiddleware.MiddlewareInit()
 	if errInit != nil {log.Fatal("jwtMiddleware.MiddlewareInit() Error:" + errInit.Error())}
 
-
-	handler.NoRoute(jwtMiddleware.MiddlewareFunc(), func(c *gin.Context) {
-		claims := jwt.ExtractClaims(c)
-		log.Printf("NoRoute claims: %#v\n", claims)
-		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
-	})
-
 	v1Group := handler.Group("/api/v1")
 
 	// Check health
@@ -111,5 +104,6 @@ func NewRouter(handler *gin.Engine, l logger.Interface, manager *_manager.CtfMan
 	admin.NewAdminRoutes(v1Group, l, manager.TeamRepo, jwtMiddleware, cfg)
 	NewAuthRoutes(v1Group, l, manager.TeamRepo, jwtMiddleware, cfg)
 	NewCheckerRoutes(v1Group, l, manager, walker, cfg.CheckerPassword)
+	NewFlagRoutes(v1Group, l, manager, jwtMiddleware)
 	NewScoreboardRoutes(v1Group, l, manager, jwtMiddleware)
 }

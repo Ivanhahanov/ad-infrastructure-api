@@ -109,14 +109,15 @@ func DeleteTeam(name string) error {
 	return nil
 }
 
-func AddAttackFlag(team string, service string) error {
-	return AddFlag(team, service, "attack_flag")
+func AddAttackFlag(team, service string) error {
+	return AddFlag(team, service, "gained")
 }
 
-func AddDefenceFlag(team string, service string) error {
-	return AddFlag(team, service, "defence_flag")
+func AddDefenceFlag(team, service string) error {
+	return AddFlag(team, service, "lost")
 }
-func AddFlag(team string, service string, field string) error {
+
+func AddFlag(team, service, field string) error {
 	_, err := flags.UpdateOne(ctx, bson.M{
 		"team":    team,
 		"service": service,
@@ -129,7 +130,18 @@ func AddFlag(team string, service string, field string) error {
 	}
 	return nil
 }
-func CountTeams() int64 {
-	itemCount, _ := collection.CountDocuments(ctx, bson.M{"name": bson.M{"$ne": "admin"}})
-	return itemCount
+
+type ServiceFlagsStats struct {
+	Gained  float64            `bson:"gained"`
+	Lost    float64            `bson:"lost"`
+}
+
+func GetServiceFlagsStats(team, service string) (f ServiceFlagsStats) {
+	res := flags.FindOne(ctx, bson.M{
+		"team":    team,
+		"service": service,
+	})
+	res.Decode(&f)
+	log.Println(res, f)
+	return f
 }

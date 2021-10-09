@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Ivanhahanov/ad-infrastructure-api/database"
 	"github.com/gin-gonic/gin"
+	"net"
 	"net/http"
 )
 
@@ -38,7 +39,36 @@ func DeleteTeams(c *gin.Context) {
 	})
 }
 
+type TeamsForAnsible struct {
+	IP        string `json:"ip"`
+	Netmask      string `json:"netmask"`
+	Mode      string `json:"mode"`
+	Name      string `json:"name"`
+	DHCPStart string `json:"dhcp_start"`
+	DHCPEnd   string `json:"dhcp_end"`
+}
+
 func CountTeamsHandler(c *gin.Context) {
-	teamsCount := database.CountTeams()
-	c.JSON(http.StatusOK, gin.H{"count": teamsCount})
+	var result []TeamsForAnsible
+	teams, _ := database.GetTeams()
+	for _, team := range teams{
+		data := TeamsForAnsible{
+			Name: team.Name,
+			Netmask: "255.255.255.0",
+			Mode: "nat",
+		}
+		// network address
+		ip := net.ParseIP(team.Address)
+		ip = ip.To4()
+		ip[3] = 0
+		data.IP = ip.String()
+		// dhcp start
+		ip[3] = 11
+		data.DHCPStart = ip.String()
+		ip[3] = 253
+		data.DHCPEnd = ip.String()
+		result = append(result, data)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"teams": result})
 }

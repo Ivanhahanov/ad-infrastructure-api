@@ -43,7 +43,7 @@ func generateIp(number int) string {
 		log.Println(err.Error())
 	}
 	ip = ip.To4()
-	ip[3] += byte(number + 11)
+	ip[2] += byte(number)
 	return ip.String()
 }
 

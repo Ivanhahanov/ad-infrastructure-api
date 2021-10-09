@@ -30,13 +30,13 @@ func ShowTeamStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{teamName: result})
 }
 
-type STeam struct {
+type ScoreboardTeamJson struct {
 	TeamName string     `json:"name"`
 	SLA      float64    `json:"sla"`
-	Services []SService `json:"services"`
+	Services []ScoreboardServiceJson `json:"services"`
 }
 
-type SService struct {
+type ScoreboardServiceJson struct {
 	Name  string  `json:"name"`
 	Value string  `json:"value"`
 	SLA   float64 `json:"sla"`
@@ -48,16 +48,16 @@ func ShowScoreboard(c *gin.Context) {
 	if dbErr != nil {
 		log.Println(dbErr)
 	}
-	var scoreboard []STeam
+	var scoreboard []ScoreboardTeamJson
 	for _, team := range teams {
 		var serviceNum = 0.0
 		var totalStatus = 0.0
-		sTeam := STeam{
+		sTeam := ScoreboardTeamJson{
 			TeamName: team.Name,
 		}
 		teamHistory := database.GetTeamHistory(team.Name)
 		for serviceName, values := range teamHistory.RoundsHistory {
-			sService := SService{}
+			sService := ScoreboardServiceJson{}
 			var totalServiceOKStatus = 0.0
 			for i := 1; i < len(values); i++ {
 				if values[i] == teamHistory.Sources {

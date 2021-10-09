@@ -201,7 +201,7 @@ func main() {
 		}
 		services := v1.Group("/services")
 		{
-			services.GET("/teams/count", routers.CountTeamsHandler)
+			services.GET("/teams/info", routers.CountTeamsHandler)
 		}
 		v1.GET("/checker",
 			gin.BasicAuth(gin.Accounts{

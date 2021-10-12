@@ -1,7 +1,9 @@
 services:
   - name: ExampleTask
-    http:
-      - route: /check/user
-        schema: http
-        method: get
-        port: 3333
+#    http:
+#      - route: /check/user
+#        schema: http
+#        method: get
+#        port: 3333
+    scripts:
+      - name: example_get.py

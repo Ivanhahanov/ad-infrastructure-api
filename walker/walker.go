@@ -56,6 +56,14 @@ func PutFlags() (map[string]int, error) {
 					}
 				}
 			}
+			if !reflect.ValueOf(service.Script).IsZero() {
+				for _, script := range service.Script{
+					flag := providers.GenerateFlag(20)
+					// response, _ := script.RunScript(team.Address, flag)
+					response, _ := script.RunScript("localhost", flag)
+					log.Println(response)
+				}
+			}
 		}
 	}
 	return promResult, nil
@@ -100,6 +108,14 @@ func CheckFlags() (map[string]int, error) {
 					if flag[0] == team.Name && flag[1] == service.Name {
 						promResult[metricNameStr] = 1
 					}
+				}
+			}
+			if !reflect.ValueOf(service.Script).IsZero() {
+				for _, script := range service.Script{
+					id := "123"
+					// response, _ := script.RunScript(team.Address, flag)
+					response, _ := script.RunScript("localhost", id)
+					log.Println(response)
 				}
 			}
 		}

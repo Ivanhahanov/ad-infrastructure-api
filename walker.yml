@@ -1,12 +1,14 @@
 services:
   - name: ExampleTask
-    http:
-      - route: /user
-        schema: http
-        method: put
-        port: 3333
-        header:
-          Content-Type: application/json
-        json_body:
-          name: test
-          password: $flag
+#    http:
+#      - route: /user
+#        schema: http
+#        method: post
+#        port: 3333
+#        header:
+#          Content-Type: application/json
+#        json_body:
+#          name: test
+#          password: $flag
+    scripts:
+      - name: example_put.py

@@ -12,8 +12,9 @@ type ConfigProviders struct {
 }
 
 type Service struct {
-	Name string `yaml:"name"`
-	HTTP []HTTP `yaml:"http"`
+	Name   string   `yaml:"name"`
+	HTTP   []HTTP   `yaml:"http"`
+	Script []Script `yaml:"scripts"`
 }
 
 type Team struct {
@@ -30,6 +31,10 @@ type HTTP struct {
 	Params   map[string]string      `yaml:"params"`
 	Header   map[string]string      `yaml:"header"`
 	JsonBody map[string]interface{} `yaml:"json_body"`
+}
+
+type Script struct {
+	Name string `yaml:"name"`
 }
 
 func (p *ConfigProviders) Parse(filename string) error {

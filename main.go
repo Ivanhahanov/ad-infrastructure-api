@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/Ivanhahanov/ad-infrastructure-api/config"
 	"github.com/Ivanhahanov/ad-infrastructure-api/database"
 	"github.com/Ivanhahanov/ad-infrastructure-api/models"
@@ -61,8 +60,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(config.Conf)
+
 	database.InitMongo()
+
+	var sc config.ServicesCost
+	sc.Load()
+	database.UploadServiceCost(sc.Services)
+
 	database.InitRedis()
 
 	AddAdmin()

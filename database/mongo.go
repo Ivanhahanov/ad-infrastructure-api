@@ -14,6 +14,7 @@ import (
 
 var collection *mongo.Collection
 var flags *mongo.Collection
+var services *mongo.Collection
 var ctx = context.TODO()
 
 func InitMongo() {
@@ -44,6 +45,7 @@ func InitMongo() {
 
 	collection = client.Database("ad").Collection("teams")
 	flags = client.Database("ad").Collection("flags")
+	services = client.Database("ad").Collection("services")
 }
 
 func CreateTeam(team *models.Team) error {
@@ -132,8 +134,8 @@ func AddFlag(team, service, field string) error {
 }
 
 type ServiceFlagsStats struct {
-	Gained  float64            `bson:"gained"`
-	Lost    float64            `bson:"lost"`
+	Gained float64 `bson:"gained"`
+	Lost   float64 `bson:"lost"`
 }
 
 func GetServiceFlagsStats(team, service string) (f ServiceFlagsStats) {
@@ -142,6 +144,40 @@ func GetServiceFlagsStats(team, service string) (f ServiceFlagsStats) {
 		"service": service,
 	})
 	res.Decode(&f)
-	log.Println(res, f)
 	return f
+}
+
+func GetServicesCost() (s []*models.Service, err error) {
+	cur, err := services.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+
+	for cur.Next(ctx) {
+		var service models.Service
+		err := cur.Decode(&service)
+		if err != nil {
+			return s, err
+		}
+
+		s = append(s, &service)
+	}
+
+	if err := cur.Err(); err != nil {
+		return s, err
+	}
+	return s, nil
+}
+
+func UploadServiceCost(s []*models.Service) {
+	var si []interface{}
+	for _, elem := range s {
+		si = append(si, *elem)
+	}
+	services.DeleteMany(ctx, bson.M{})
+	insertManyResults, err := services.InsertMany(ctx, si)
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println(insertManyResults)
 }
